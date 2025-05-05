@@ -1,17 +1,19 @@
 import Head from "next/head";
+'use client';
+import FileUpload from '@/app/components/FileUpload';
+import LearnButton from '@/app/components/LearnButton';
+
+
+import { useState} from 'react';
+
 
 export default function Home() {
+  const [filesUploaded, setFilesUploaded] = useState<File[]>([]);
   return (
-    <>
-      <div className="bg-dark text-white min-vh-100 d-flex flex-column justify-content-center align-items-center">
-        <div
-          className="jumbotron text-center my-5"
-          style={{ maxWidth: "50%", margin: "auto" }}
-        >
-          <h1 className="display-1">CRAMMASTER.AI</h1>
-          <h6 className="display-7 text-end">Created By: Abhishek</h6>
-        </div>
-      </div>
-    </>
+    <div className="flex flex-col items-center text-center">
+      <FileUpload filesUploaded={filesUploaded} setFilesUploaded={setFilesUploaded} />
+      <LearnButton filesUploaded={filesUploaded} setFilesUploaded={setFilesUploaded} />
+    </div>
+
   );
 }

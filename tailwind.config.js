@@ -1,0 +1,11 @@
+module.exports = {
+  content: ['./src/**/*.{js,ts,jsx,tsx}'],
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['Nunito', 'sans-serif'], // Nunito is added here
+      },
+    },
+  },
+  plugins: [],
+};
