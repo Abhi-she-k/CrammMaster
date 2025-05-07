@@ -1,13 +1,15 @@
 'use client';
 
+import React from 'react';
 import { useState } from 'react';
-
 interface FileUploadProps {
   filesUploaded: File[];
   setFilesUploaded: React.Dispatch<React.SetStateAction<File[]>>;
 }
 
-export default function FileUpload({ filesUploaded, setFilesUploaded }: FileUploadProps) {
+export default function FileUpload({ filesUploaded, setFilesUploaded }: FileUploadProps) { // Update state in the parent component
+  
+  
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (files) {
@@ -32,11 +34,11 @@ export default function FileUpload({ filesUploaded, setFilesUploaded }: FileUplo
         multiple
         onChange={handleFileChange}
       />
-      <div className="flex flex-row bg-gray-500/20 rounded-lg p-3 my-5 mw-100">
+      <div className="flex flex-row bg-gray-500/20 rounded-lg overflow-auto w-250 max-w-9/10 justify-center">
         {filesUploaded.length > 0 &&
           filesUploaded.map((file, index) => (
             <div
-              className="flex flex-col items-center text-center p-2 mx-5 mw-2 bg-transparent"
+              className="flex flex-col items-center text-center p-1 mx-1 bg-transparent"
               key={index}
             >
               <img
@@ -44,7 +46,7 @@ export default function FileUpload({ filesUploaded, setFilesUploaded }: FileUplo
                 className="w-10 mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white"
                 alt="PDF Icon"
               />
-              <p className="font-normal">
+              <p className="font-normal w-50 truncate">
                 {file.name} - {file.type.split('/')[1]}
               </p>
             </div>

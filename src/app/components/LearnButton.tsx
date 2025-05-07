@@ -18,19 +18,31 @@ export default function LearnButton({ filesUploaded, setFilesUploaded }: FileUpl
         formData.append('file', file); // Append each file to the FormData object
       });
 
-      const response = await fetch('/api/downloadFiles', {
+      const responseDownloadFiles = await fetch('/api/downloadFiles', {
         method: 'POST', 
         body: formData
       });
 
+      var data = await responseDownloadFiles.json();
+
       // Check if the response is successful
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+      if (data.status == 400) {
+        throw new Error(`HTTP error! status: ${data.status} message: ${data.error}`);
+      }
+      else{
+        console.log(`status: ${data.status} message: ${data.message}`)
+        
+        const responseLearn = await fetch('api/learn', {
+          method: 'GET'
+        })
+
+        var data = await responseLearn.json()
+
+        console.log(data)
+
       }
 
       // Parse the JSON response
-      const data = await response.json();
-      console.log('Response from API:', data);
     } catch (error) {
       console.error('Error processing files:', error);
     }
