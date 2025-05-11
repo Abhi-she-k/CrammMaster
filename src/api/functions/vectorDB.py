@@ -5,8 +5,7 @@ def writeToQdrantDB(embeddings, fileName):
     try:
 
         qdrant_client = QdrantClient(
-                url="https://42fe4619-4c3a-47cf-949c-bacc1592c62e.us-west-1-0.aws.cloud.qdrant.io:6333",
-                api_key="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2Nlc3MiOiJtIn0.PG80eZa1mZVjl6JhTEpVumAyHTTQFn_0Z_OCNikjhoY",
+
         )
 
         if(qdrant_client.collection_exists(collection_name="sentences")):
