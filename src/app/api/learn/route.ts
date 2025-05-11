@@ -12,9 +12,13 @@ export async function GET(req: NextRequest ){
 
         const data = await response.json()
 
-        console.log(data.message)
+        if(data.status == 400){
+            return new Response(JSON.stringify({message: data.message}), {status: 400})
+        }
+        else{
+            return new Response(JSON.stringify({message: data.message}), {status: 200})
+        }
 
-        return new Response(JSON.stringify({message: "Learn Process Completed!"}), {status: 200})
 
     }
     catch{

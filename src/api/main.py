@@ -5,56 +5,67 @@ from os import listdir
 from os.path import isfile, join
 
 from functions.sentenceExtraction import sentenceExtraction
+from functions.getVectorEmbedding import getVectorEmbedding
+from functions.vectorDB import writeToQdrantDB
 
-from functions.getSentenceVector import getSentenceVector
-
+from concurrent.futures import ThreadPoolExecutor
 
 app = FastAPI()
 
-# Enable CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3001"],  # your Next.js frontend
+    allow_origins=["http://localhost:3000/"],
 )
 
-# @app.get("/api/hello")
-# def read_root():
-#     return {"message": "Hello from FastAPI"}
-
-# @app.get("/getSentences")
-# def hello(pdfFilePath:str):
-#     message = sentenceExtraction(pdfFilePath)
-#     return {
-#         "message": "hello"
-#     }
-
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
 
 @app.get("/learn")
 def learn():
         
+    print("hello")
+
     path = 'C:/Users/abhis/Desktop/Projects/crammaster.ai/CramMaster/tmp/uploads'
 
-    embeddingData = {}
+    def processFile(file):
 
-    for file in listdir(path):
         if (isfile(join(path, file))):
-            print(file)
+            
             sentences = sentenceExtraction(join(path, file))
 
-            fileVector = []
+            if (sentences.get("error") == "True"):
+                return {
+                    "message": sentences.get("message"),
+                    "status": "400"
+                }
 
-            for sentence in sentences:
+            fileEmbeddings = []
+
+            for sentence in sentences.get("sentences"):
             
-                vector = getSentenceVector(sentence)
-                fileVector.append(vector)
+                vectorEmbedding = getVectorEmbedding(sentence)
 
-            embeddingData[file] = fileVector
+                if (vectorEmbedding.get("error") == "True"):
+                    return {
+                        "message": vectorEmbedding.get("message"),
+                        "status": "400"
+                    }
 
-    
-    print(embeddingData.keys())
+                fileEmbeddings.append(vectorEmbedding)
 
+            dbWrite = writeToQdrantDB(fileEmbeddings, file)
 
-    # return {
-    #     "":
-    # }
+            if(dbWrite.get("error") == "True"):
+                return {
+                    "message": dbWrite.get("message"),
+                    "status": "400"
+                }
+            
+    with ThreadPoolExecutor() as executor:
+        list(executor.map(processFile, [file for file in listdir(path)]))
 
+    return {
+        "message": "Learn Process Completed Successfully.",
+        "status": "200"
+    }
